@@ -1,37 +1,30 @@
-from telegram import Update, Bot, KeyboardButton, ReplyKeyboardMarkup
-from telegram.ext import Updater, CommandHandler
+from telegram import Update, KeyboardButton, ReplyKeyboardMarkup
+from telegram.ext import Application, CommandHandler, CallbackContext
 
 # Ваш токен от BotFather
 TOKEN = "7756439379:AAFTcllKuFy2SpRdCoELAhRvP-zt6P1ZARA"
 
-# Ссылка на игру
-WEB_APP_URL = "https://iriska074.github.io/Metal-Shift/"
-
-# Функция для команды /start
-def start(update: Update, context):
+async def start(update: Update, context: CallbackContext):
     # Кнопка для запуска мини-приложения
     keyboard = [
-        [KeyboardButton("Запустить игру", web_app={"url": WEB_APP_URL})]
+        [KeyboardButton("Запустить игру", web_app={"url": "https://iriska074.github.io/Metal-Shift/"})]
     ]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
     # Отправляем сообщение с кнопкой
-    update.message.reply_text(
+    await update.message.reply_text(
         "Нажмите на кнопку ниже, чтобы начать игру!", reply_markup=reply_markup
     )
 
-# Основная функция
 def main():
-    # Создаём бота
-    updater = Updater(TOKEN)
-    dispatcher = updater.dispatcher
+    # Создаём приложение (новый способ с python-telegram-bot 20.x)
+    application = Application.builder().token(TOKEN).build()
 
     # Обрабатываем команду /start
-    dispatcher.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("start", start))
 
     # Запускаем бота
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
 if __name__ == "__main__":
     main()
